@@ -1,0 +1,8 @@
+<resources>
+
+    <!--Gerado do SHA!: E0:DA:18:87:F1:08:EA:AB:AD:F8:94:81:B2:20:E1:16:49:39:D0:07;br.com.infinity.inagito
+     cordenadas de casa @-10.8880173,-61.9244513,18z
+     -->
+    <string name="google_maps_key">AIzaSyBDtH65t9qxhlYHK-sfnmAanFIprMSocF4</string>
+    <integer name="google_play_services_version">7571000</integer>
+</resources>
