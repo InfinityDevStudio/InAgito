@@ -40,16 +40,17 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
     private GoogleMap map;
     private Location location;
     private GoogleApiClient mGoogleApicliente;
-    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    private LocationManager locationManager;
     Cursor c = null;
     SQLiteDatabase bd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getSupportActionBar().hide();
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
         //abri o bd
@@ -58,9 +59,16 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         } catch (Exception e) {
             ExibirMensagem("Erro abrir o Banco de dados");
         }
+
         setUpMapIfNeeded();
 
-        mGoogleApicliente = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        mGoogleApicliente = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        //.apiClientBuilder
+
+
 
 
 
@@ -94,6 +102,7 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (map != null) {
+
                 setUpMap();
             }
         }
@@ -105,15 +114,23 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
 
         map.setMyLocationEnabled(true);
         // colocar localizaao atual do usuario
+        if(mGoogleApicliente!=null) {
+            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApicliente);
+            ExibirMensagem("teste" + Double.toString(location.getLatitude()) + Double.toString(location.getLongitude()));
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            LatLng ll = new LatLng(lat, lng);
 
-        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApicliente);
-        ExibirMensagem("teste"+Double.toString( location.getLatitude()) + Double.toString(location.getLongitude()));
-        double lat= location.getLatitude();
-        double lng = location.getLongitude();
-        LatLng ll = new LatLng(lat, lng);
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 10));
+        }else if (mGoogleApicliente == null){
+            LatLng ll = new LatLng(  -10.8880173, -61.9244513);
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 10));
+        }
 
 
-       map.moveCamera(CameraUpdateFactory.newLatLngZoom( ll, 10));
+
         map.animateCamera(CameraUpdateFactory.zoomTo(15), 5000, null);
         map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marcacao teste"));
 
@@ -168,7 +185,7 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onResume(){
         super.onResume();
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this.onLocationChanged());
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
     }
 
     @Override
