@@ -36,22 +36,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-
     private GoogleMap map;
     private Location location;
     private GoogleApiClient mGoogleApicliente;
     private LocationManager locationManager;
     Cursor c = null;
     SQLiteDatabase bd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getSupportActionBar().hide();
         setContentView(R.layout.activity_principal);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
 
         //abri o bd
         try {
@@ -59,19 +57,14 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         } catch (Exception e) {
             ExibirMensagem("Erro abrir o Banco de dados");
         }
-
-        setUpMapIfNeeded();
-
+        //conectando com a Google Play Serviços
         mGoogleApicliente = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
         //.apiClientBuilder
 
-
-
-
-
+        setUpMapIfNeeded();
 
        map.setOnMarkerClickListener(new OnMarkerClickListener() {
            @Override
@@ -85,16 +78,104 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
                }
                return false;
            }
-       } );
-
+       });
     }
 
 
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        mGoogleApicliente.connect();
+
+    }
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, onLocationChanged(location));
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
+    }
+
+
+
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //locationManager.removeUpdates((LocationListener) this);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mGoogleApicliente.disconnect();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_frag_map, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(map!=null ){
+            if(item.getItemId()==R.id.action_mapa_hibrido){
+                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            }else if (item.getItemId()==R.id.action_mapa_normal){
+                map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }else if (item.getItemId()==R.id.action_mapa_satelite){
+                map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            }else if (item.getItemId()==R.id.action_mapa_terreno){
+                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            }else if (item.getItemId()==R.id.action_zoom_in){
+                map.animateCamera(CameraUpdateFactory.zoomIn());
+            }else if (item.getItemId()==R.id.action_zoom_out){
+                map.animateCamera(CameraUpdateFactory.zoomOut());
+            };
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //estados da concção com o Google Play Services
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("Teste","Conectado ao google play services"+bundle );
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("Teste2","Coneccao ao google play services interrropida"+i );
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("Teste","Conectado ao google play services"+connectionResult );
+
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d("Teste","Conectado ao google play services" );
+        this.map = googleMap;
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+    }
+
+    //
+    //metodos
+    //
+
+    public void onLocationChanged(Location location) {
+        this.location = location;
+    }
+
     private void setUpMapIfNeeded() {
-
-
-
         // Do a null check to confirm that we have not already instantiated the map.
         if (map == null) {
             // Try to obtain the map from the SupportMapFragment.
@@ -108,26 +189,30 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
-
     private void setUpMap() {
 
         map.setMyLocationEnabled(true);
         // colocar localizaao atual do usuario
-        if(mGoogleApicliente!=null) {
+        LatLng ll;
+
+
             location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApicliente);
-            ExibirMensagem("teste" + Double.toString(location.getLatitude()) + Double.toString(location.getLongitude()));
-            double lat = location.getLatitude();
-            double lng = location.getLongitude();
-            LatLng ll = new LatLng(lat, lng);
+            // ExibirMensagem("teste" + Double.toString(location.getLatitude()) + Double.toString(location.getLongitude()));
 
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 10));
-        }else if (mGoogleApicliente == null){
-            LatLng ll = new LatLng(  -10.8880173, -61.9244513);
+            if (location != null && map != null) {
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 10));
-        }
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                ll = new LatLng(lat, lng);
+
+
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 10));
+            }
+
+
+
+
 
 
 
@@ -148,7 +233,7 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
                 int j = c.getInt(c.getColumnIndex("tipo"));
 
                 if (j == 1){
-                   icon = R.mipmap.marcador_in;
+                    icon = R.mipmap.marcador_in;
 
                 }else if (j == 2){
                     icon = R.mipmap.marcador_in;
@@ -158,7 +243,8 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
 
                 }
                 map.addMarker(new MarkerOptions().position(new LatLng(c.getDouble(c.getColumnIndex("posicaolat")), c.getDouble(c.getColumnIndex("posicaolng"))))
-                        .title(c.getString(c.getColumnIndex("titulo"))).snippet(c.getString(c.getColumnIndex("informacao")))
+                        .title(c.getString(c.getColumnIndex("titulo")))
+                        .snippet(c.getString(c.getColumnIndex("informacao")))
                         .icon(BitmapDescriptorFactory.fromResource(icon)));
 
                 c.moveToNext();
@@ -169,107 +255,14 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
 
-        }
-
-
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        mGoogleApicliente.connect();
-
     }
 
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this.onLocationChanged());
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        locationManager.removeUpdates((LocationListener) this);
-    }
-
-    @Override
-    protected void onStop(){
-
-        mGoogleApicliente.disconnect();
-        super.onStop();
-    }
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_frag_map, menu);
-        return true;
-
-
-
-    }
 
     private void ExibirMensagem(String mensagem) {
         AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
         dialogo.setTitle("Aviso");
-
         dialogo.setMessage(mensagem);
         dialogo.setNeutralButton("OK", null);
         dialogo.show();
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(map!=null ){
-            if(item.getItemId()==R.id.action_mapa_hibrido){
-                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            }else if (item.getItemId()==R.id.action_mapa_normal){
-                map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            }else if (item.getItemId()==R.id.action_mapa_satelite){
-                map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            }else if (item.getItemId()==R.id.action_mapa_terreno){
-                map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            }else if (item.getItemId()==R.id.action_zoom_in){
-                map.animateCamera(CameraUpdateFactory.zoomIn());
-            }else if (item.getItemId()==R.id.action_zoom_out){
-                map.animateCamera(CameraUpdateFactory.zoomOut());
-            };
-
-
-
-
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d("Teste","Conectado ao google play services" );
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d("Teste2","Coneccao ao google play services interrropida" );
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("Teste","Conectado ao google play services"+connectionResult );
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        Log.d("Teste","Conectado ao google play services" );
-       // this.googleMap = googleMap;
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
     }
 }
