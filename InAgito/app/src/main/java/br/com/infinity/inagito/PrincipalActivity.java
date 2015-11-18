@@ -79,7 +79,7 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    private synchronized void callConnection(){
+    public synchronized void callConnection(){
         //conectando com a Google Play Servicos
         mGoogleApicliente = new GoogleApiClient.Builder(this)
                 .addOnConnectionFailedListener(this)
@@ -213,7 +213,7 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
 
 
 
-    private void setUpMapIfNeeded() {
+    public void setUpMapIfNeeded() {
            if (map == null) {
 
             map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
