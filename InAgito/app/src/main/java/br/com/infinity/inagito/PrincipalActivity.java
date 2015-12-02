@@ -35,6 +35,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -45,6 +48,8 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
     private Cursor c = null;
     private Location location;
     private SQLiteDatabase bd;
+    List<marcadorDados> listaMarcados;
+    Integer r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +62,15 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
         //abri o bd
         try {
             bd = openOrCreateDatabase("bd_inagito", Context.MODE_PRIVATE, null);
+            String query = "SELECT * FROM marcador ";
+            c = bd.rawQuery(query, null);
+            c.moveToFirst();
+           r = c.getCount();
         } catch (Exception e) {
             ExibirMensagem("Erro abrir o Banco de dados");
         }
+
+        preparaListaMarcador();
 
         callConnection();
 
@@ -77,6 +88,30 @@ public class PrincipalActivity extends AppCompatActivity implements OnMapReadyCa
                 return true;
             }
         });
+    }
+
+    private void preparaListaMarcador() {
+
+        for (int i = 0; i < r ; i++) {
+            listaMarcados = new ArrayList<marcadorDados>();
+
+
+
+            while (c.moveToNext()) {
+                marcadorDados marcador = new marcadorDados();
+                marcador.setEndereco(c.getString(c.getColumnIndex("endereco")));
+                marcador.setHorario(c.getString(c.getColumnIndex("horario")));
+                marcador.setPosicaolat(c.getDouble(c.getColumnIndex("posicaolat")));
+                marcador.setPosicaolng(c.getDouble(c.getColumnIndex("posicaolng")));
+                marcador.setTipo(c.getString(c.getColumnIndex("tipo")));
+                marcador.setTitulo(c.getString(c.getColumnIndex("titulo")));
+                marcador.setInformacao(c.getString(c.getColumnIndex("informacao")));
+                listaMarcados.add(marcador);
+            }
+
+
+        }
+
     }
 
     public synchronized void callConnection(){

@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import br.com.infinity.inagito.PrincipalActivity;
 
 /**
  * Created by Allison on 29/09/2015.
@@ -36,7 +35,7 @@ public class Informacao extends Activity implements OnMapReadyCallback,
     SQLiteDatabase bd;
     TextView titulo, endereco, horario, descricao;
     private GoogleMap map2;
-    String recuperado, tituloBd, informacaoBd, tipoBd, latBd, lngBd;
+    String recuperado, tituloBd, informacaoBd, tipoBd, latBd, lngBd, enderecoBd, horarioBd;
     private Location location2;
     private GoogleApiClient mGoogleApicliente;
 
@@ -54,35 +53,39 @@ public class Informacao extends Activity implements OnMapReadyCallback,
         }
 
 
+
     try {
         bd = openOrCreateDatabase("bd_inagito", Context.MODE_PRIVATE, null);
-
-
-
-        c = bd.query("marcador", new String[] { "titulo,informacao,tipo,posicaolat, posicaolng" },
-                "titulo = "+recuperado, null, null, null, null);
-
+        String query = "SELECT titulo,informacao,tipo,posicaolat, posicaolng, horario, endereco FROM marcador where titulo = '"+recuperado+"'";
+        c = bd.rawQuery(query, null);
         c.moveToFirst();
+
         tituloBd = c.getString(0);
         informacaoBd = c.getString(1);
         tipoBd = c.getString(2);
         latBd = c.getString(3);
         lngBd = c.getString(4);
+        horarioBd = c.getString(5);
+        enderecoBd = c.getString(6);
+
 
     } catch (Exception e) {
         ExibirMensagem("Erro abrir o Banco de dados");
     }
+    //#009688 tolbar
+    //letras brancas
+    //#00695c
 
+        callConnection2();
 
-       callConnection2();
-       this.setUpMapIfNeeded2();
+        setUpMapIfNeeded2();
 
 
 
         horario = (TextView) findViewById(R.id.tvHorario);
-        horario.setText(recuperado);
+        horario.setText( horarioBd);
         endereco = (TextView) findViewById(R.id.tvEndereco);
-        endereco.setText(recuperado);
+        endereco.setText(enderecoBd);
         descricao = (TextView) findViewById(R.id.tvDescricao);
         descricao.setText(informacaoBd);
 
@@ -132,20 +135,13 @@ public class Informacao extends Activity implements OnMapReadyCallback,
         map2.setMyLocationEnabled(true);
 
         try {
-            String query = "SELECT * FROM marcador where titulo = "+recuperado+";";
-            c = null;
-            c = bd.rawQuery(query, null);
-
-            c.moveToFirst();
-            Integer r = c.getCount();
-
 
                 map2.addMarker(new MarkerOptions().position(new LatLng(c.getDouble(c.getColumnIndex("posicaolat")), c.getDouble(c.getColumnIndex("posicaolng"))))
                         .title(c.getString(c.getColumnIndex("titulo")))
                         .snippet(c.getString(c.getColumnIndex("informacao")))
                         .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marcador_in)));
 
-                c.moveToNext();
+
             LatLng ll = new LatLng(c.getColumnIndex("posicaolat"), c.getColumnIndex("posicaolng"));
 
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
