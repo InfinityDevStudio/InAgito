@@ -38,11 +38,11 @@ public class CriaBD extends Activity{
                       "values('Casa Allison','Onde tudo começou a ter forma', '1', -10.8880173, -61.9244513, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs', 'av principal,n 999')");
 
               bd.execSQL("insert into marcador(titulo,informacao,tipo,posicaolat, posicaolng, horario, endereco) " +
-                      "values('Teste Topcom','Loja de informatica e telefonia, com assitencia tecnica', '2', -10.8876565, -61.923152, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs', 'av principal,n 999')");
+                      "values('Teste Topcom','Loja de informatica e telefonia, com assitencia tecnica com assitencia tecnica teste teste teste steste stestajsdhglk jahsdglkjash testes', '2', -10.8876565, -61.923152, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs teste para 3 linha mais testado possivel empossivel se der certo acho q ta dando certo 3 linha mais testado possivel empossivel se der certo acho q ta dando certo 3 linha mais testado possivel empossivel se der certo acho q ta dando certo', 'av principal,n 999')");
               bd.execSQL("insert into marcador(titulo,informacao,tipo,posicaolat, posicaolng, horario, endereco) " +
                       "values('Teste Bar do miodo','Bar de esquena', '2', -10.8923144, -61.9250011, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs', 'av principal,n 999')");
               bd.execSQL("insert into marcador(titulo,informacao,tipo,posicaolat, posicaolng, horario, endereco) " +
-                      "values('Teste ulbra','Centro Universitario Luterano de Ji-Paraná', '3', -10.8642139, -61.9606871, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs', 'av principal,n 999')");
+                      "values('Teste Ulbra','Centro Universitario Luterano de Ji-Paraná', '3', -10.8642139, -61.9606871, 'Horario: 9hs às 22hs', 'Av. Principal,n 999')");
               bd.execSQL("insert into marcador(titulo,informacao,tipo,posicaolat, posicaolng, horario, endereco) " +
                       "values('Teste Igreja','Teste testado para testar /n pular linha', '3', -10.8870266, -61.9289728, '7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs', 'av principal,n 999')");
 

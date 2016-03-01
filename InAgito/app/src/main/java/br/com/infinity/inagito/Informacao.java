@@ -8,8 +8,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,6 +38,7 @@ public class Informacao extends Activity implements OnMapReadyCallback,
     Cursor c = null;
     SQLiteDatabase bd;
     TextView titulo, endereco, horario, descricao;
+    ImageView ivhorario, ivendereco, ivdescricao;
     private GoogleMap map2;
     String recuperado, tituloBd, informacaoBd, tipoBd, latBd, lngBd, enderecoBd, horarioBd;
     private Location location2;
@@ -44,6 +49,9 @@ public class Informacao extends Activity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState2);
 
         setContentView(R.layout.informacao_layout);
+        setUpMapIfNeeded2();
+       //getActionBar().setDisplayHomeAsUpEnabled(true);
+
         titulo = (TextView) findViewById(R.id.tvTitulo);
         Intent intent = getIntent();
         Bundle params = intent.getExtras();
@@ -76,11 +84,16 @@ public class Informacao extends Activity implements OnMapReadyCallback,
     //letras brancas
     //#00695c
 
-        callConnection2();
-
-        setUpMapIfNeeded2();
 
 
+
+
+        ivdescricao = (ImageView) findViewById(R.id.ivDescricao);
+        ivendereco = (ImageView) findViewById(R.id.ivEndereco);
+        ivhorario = (ImageView) findViewById(R.id.ivHorario);
+        ivhorario.setImageResource(R.mipmap.ic_horario);
+        ivendereco.setImageResource(R.mipmap.ic_endereco);
+        ivdescricao.setImageResource(R.mipmap.ic_info);
 
         horario = (TextView) findViewById(R.id.tvHorario);
         horario.setText( horarioBd);
@@ -104,22 +117,12 @@ public class Informacao extends Activity implements OnMapReadyCallback,
     //metodos
     //
 
-    public synchronized void callConnection2(){
-        //conectando com a Google Play Servicos
-        mGoogleApicliente = new GoogleApiClient.Builder(this)
-                .addOnConnectionFailedListener(this)
-                .addConnectionCallbacks(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApicliente.connect();
 
-    }
 
     public void setUpMapIfNeeded2() {
         if (map2 == null) {
 
-            map2 = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapInfomacao))
-                    .getMap();
+            map2 = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapInfomacao)).getMap();
 
             if (map2 != null) {
 
@@ -132,17 +135,17 @@ public class Informacao extends Activity implements OnMapReadyCallback,
 
     private void setUpMap2() {
 
-        map2.setMyLocationEnabled(true);
+
 
         try {
 
-                map2.addMarker(new MarkerOptions().position(new LatLng(c.getDouble(c.getColumnIndex("posicaolat")), c.getDouble(c.getColumnIndex("posicaolng"))))
-                        .title(c.getString(c.getColumnIndex("titulo")))
-                        .snippet(c.getString(c.getColumnIndex("informacao")))
+                map2.addMarker(new MarkerOptions().position(new LatLng(c.getDouble(c.getColumnIndex(latBd)), c.getDouble(c.getColumnIndex(lngBd))))
+                        .title(c.getString(c.getColumnIndex(tituloBd)))
+                        .snippet(c.getString(c.getColumnIndex(informacaoBd)))
                         .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marcador_in)));
 
 
-            LatLng ll = new LatLng(c.getColumnIndex("posicaolat"), c.getColumnIndex("posicaolng"));
+            LatLng ll = new LatLng(c.getColumnIndex(latBd), c.getColumnIndex(lngBd));
 
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
             map2.animateCamera(update);
@@ -191,4 +194,18 @@ public class Informacao extends Activity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
 
     }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Id correspondente ao boto Up/Home da actionbar
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

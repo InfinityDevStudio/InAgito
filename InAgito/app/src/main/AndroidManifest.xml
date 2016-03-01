@@ -38,7 +38,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity            android:name=".Informacao"
+
+            android:parentActivityName=".PrincipalActivity"
             android:screenOrientation="portrait" >
+            <meta-data android:name="andorid.support.PARENT_ACTIVITY"
+                android:value=".PrincipalActivity"/>
         </activity>
 
 

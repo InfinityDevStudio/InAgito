@@ -6,7 +6,15 @@
         android:layout_width="match_parent"
     android:weightSum="1">
 
-        <include layout="@layout/toolbar_informacao"
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <include layout="@layout/toolbar_informacao"
             android:id="@+id/include" />
 
     <fragment
@@ -17,77 +25,114 @@
         android:layout_weight="0.03"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/linearLayout" />
+      />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/map"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout">
 
-    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/tvEndereco"
-        android:layout_below="@+id/ratingBar"
-        android:layout_alignLeft="@+id/ratingBar"
-        android:layout_alignStart="@+id/ratingBar" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/tvHorario"
-        android:layout_below="@+id/tvEndereco"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/tvDescricao"
-        android:layout_below="@+id/tvHorario"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView"
-        android:layout_below="@+id/tvDescricao"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
+        android:text="Titulo"
         android:id="@+id/tvTitulo"
         android:layout_below="@+id/mapInfomacao"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+
+        android:layout_marginLeft="72dp" />
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar"
         android:layout_below="@+id/tvTitulo"
-        android:layout_alignLeft="@+id/tvTitulo"
-        android:layout_alignStart="@+id/tvTitulo" />
+        android:layout_marginLeft="72dp" />
+
+
+
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="2"
+        android:layout_below="@+id/ratingBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="left">
+
+        <TableRow
+
+            android:layout_margin="10dp"
+            >
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivEndereco"
+                android:src="@drawable/ic_endereco"
+                android:layout_gravity="left|center" />
+
+            <TextView
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="endereço orario 7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs teste para 3 linha mais testado possivel emp"
+                android:id="@+id/tvEndereco"
+                android:layout_gravity="center|left"
+                android:paddingRight="10dp"
+                android:layout_weight="1" />
+
+        </TableRow >
+
+        <TableRow android:layout_margin="10dp"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivHorario"
+                android:src="@drawable/ic_horario"
+                android:layout_gravity="left|center" />
+
+            <TextView
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="horario 7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs teste para 3 linha mais testado possivel empossivel se der certo acho q ta dando certo"
+                android:id="@+id/tvHorario"
+                android:layout_weight="1"
+                android:padding="10dp" />
+
+        </TableRow>
+
+        <TableRow android:layout_margin="10dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivDescricao"
+                android:src="@drawable/ic_info"
+                android:layout_gravity="left|center" />
+
+            <TextView
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="24dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="descrição orario 7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs teste para 3 linha mais testado possivel emporario 7hs ás 20hs de segunda a sexta, sabado das 10hs ás 19hs teste para 3 linha mais testado possivel emp"
+                android:id="@+id/tvDescricao"
+                android:layout_gravity="center|left"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+    </TableLayout>
+
 
 
 </RelativeLayout>
